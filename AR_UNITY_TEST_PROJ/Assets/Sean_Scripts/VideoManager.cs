@@ -14,9 +14,9 @@ public class VideoManager : MonoBehaviour
     [SerializeField]private UnityEngine.Video.VideoPlayer video;
 
     //check or uncheck this if you want the video to keep looping in AR
-    public bool Loop;
+    //public bool Loop;
     //tracks to see if the video has played already once
-    private bool hasPlayed = false;
+    //private bool hasPlayed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +52,14 @@ public class VideoManager : MonoBehaviour
 
         return isRendered;
     }
+    
+    //method to play the video at its full length, and after the video finishes do we track that it has been played
+    IEnumerator startAndWaitForVideo()
+    {
+        video.Play();
+        yield return new WaitForSecondsRealtime((float)video.clip.length);
+        //hasPlayed = !hasPlayed;
+    }
 
     // Update is called once per frame
     void Update()
@@ -59,18 +67,11 @@ public class VideoManager : MonoBehaviour
         //checks if the object is rendered on the screen
         if (childIsRendered())
         {
-            hasPlayed = true;
+            //StartCoroutine("startAndWaitForVideo");
             video.Play();
-            StartCoroutine("WaitForSecondsRealTime", video.clip.length);
-            
-            //check to see if the video should loop or stop
-            if (!Loop && hasPlayed)
-                video.Stop();
         }
-        //the object is not rendered, thus the video should not play
         else
         {
-            hasPlayed = false;
             video.Stop();
         }
     }
